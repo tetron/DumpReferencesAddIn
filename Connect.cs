@@ -91,7 +91,11 @@ namespace DumpReferencesAddIn
             {
                 VCProject vcpr = (VCProject)pr.Object;
                 owp.OutputString(vcpr.Name + "\n");
-                allProjectGUIDs.Add(vcpr.Name, vcpr.ProjectGUID);
+                try {
+                    allProjectGUIDs.Add(vcpr.Name, vcpr.ProjectGUID);
+                }
+                catch (Exception e) {
+                }
             }
 
             HashSet<string> uniqueReferences = new HashSet<string>();

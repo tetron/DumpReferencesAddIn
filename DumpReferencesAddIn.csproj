@@ -5,15 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30424</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{54C786E5-FD14-4036-92AE-E9F25B71534B}</ProjectGuid>
+    <ProjectGuid>{08E71DB1-B903-4C77-A214-2F9EDC7C8C1E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
     <NoStandardLibraries>false</NoStandardLibraries>
     <AssemblyName>DumpReferencesAddIn</AssemblyName>
     <DeploymentDirectory>.\bin\</DeploymentDirectory>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,8 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncrementalBuild>false</IncrementalBuild>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>DumpReferencesAddIn.xml</DocumentationFile>
+    <DocumentationFile>MyAddin1.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -34,8 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <IncrementalBuild>false</IncrementalBuild>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>DumpReferencesAddIn.xml</DocumentationFile>
+    <DocumentationFile>MyAddin1.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <RootNamespace>DumpReferencesAddIn</RootNamespace>
@@ -44,7 +40,7 @@
     <Reference Include="Extensibility, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.VCProjectEngine, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <Reference Include="Microsoft.VisualStudio.VCProjectEngine, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
@@ -118,9 +114,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="C:\Users\stoyan\Documents\Visual Studio 2012\Addins\DumpReferencesAddIn - For Testing.AddIn">
-      <Link>DumpReferencesAddIn - For Testing.AddIn</Link>
-    </Content>
     <Content Include="DumpReferencesAddIn.AddIn" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
@@ -132,10 +125,24 @@
   </PropertyGroup>
   <ProjectExtensions />
   <Target Name="AfterBuild">
-    <ItemGroup>
-      <AllOutputFiles Include="$(OutputPath)*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(AllOutputFiles)" DestinationFiles="@(AllOutputFiles->'$(DeploymentDirectory)\%(Filename)%(Extension)')">
+    <PropertyGroup>
+      <DllName>$(AssemblyName).dll</DllName>
+      <PdbName>$(AssemblyName).pdb</PdbName>
+      <DocFileName>$(AssemblyName).xml</DocFileName>
+    </PropertyGroup>
+    <Delete Condition="Exists('$(DeploymentDirectory)$(DllName)')" Files="$(DeploymentDirectory)$(DllName)">
+    </Delete>
+    <Delete Condition="Exists('$(DeploymentDirectory)$(PdbName)')" Files="$(DeploymentDirectory)$(PdbName)">
+    </Delete>
+    <Delete Condition="Exists('$(DeploymentDirectory)$(DocFileName)')" Files="$(DeploymentDirectory)$(DocFileName)">
+    </Delete>
+    <Copy Condition="Exists('$(OutputPath)$(DllName)')" SourceFiles="$(OutputPath)$(DllName)" DestinationFolder="$(DeploymentDirectory)">
+      <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
+    </Copy>
+    <Copy Condition="Exists('$(OutputPath)$(PdbName)')" SourceFiles="$(OutputPath)$(PdbName)" DestinationFolder="$(DeploymentDirectory)">
+      <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
+    </Copy>
+    <Copy Condition="Exists('$(OutputPath)$(DocFileName)')" SourceFiles="$(OutputPath)$(DocFileName)" DestinationFolder="$(DeploymentDirectory)">
       <Output TaskParameter="DestinationFiles" ItemName="FileWrites" />
     </Copy>
   </Target>
